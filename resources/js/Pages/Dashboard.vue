@@ -14,7 +14,7 @@ import { Head } from '@inertiajs/vue3';
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 flex justify-between items-center">
                         <h3 class="font-semibold text-lg">Your Tasks</h3>
-                        <router-link :to="{ name: 'tasks.create' }" class="text-blue-500">Create New Task</router-link>
+                        <router-link :to="{ name: 'tasks.create' }" class="text-blue-500 cursor-pointer">Create New Task</router-link>
                     </div>
                     <div class="p-6">
                         <ul>
