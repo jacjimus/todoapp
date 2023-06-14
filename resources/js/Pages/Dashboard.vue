@@ -1,8 +1,3 @@
-<script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
-</script>
-
 <template>
     <AuthenticatedLayout>
         <template #header>
@@ -17,9 +12,24 @@ import { Head } from '@inertiajs/vue3';
                         <router-link :to="{ name: 'tasks.create' }" class="text-blue-500 cursor-pointer">Create New Task</router-link>
                     </div>
                     <div class="p-6">
-                        <ul>
-                            <li v-for="task in tasks" :key="task.id">{{ task.title }}</li>
-                        </ul>
+                        <table class="table table-responsive w-100">
+                            <thead>
+                            <tr>
+                            <th>Title</th>
+                            <th>Description</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr  v-for="task in tasks" :key="task.id">
+                                <td>{{ task.title }}</td>
+                                <td>{{ task.description }}</td>
+                                <td>
+                                    <router-link :to="{ name: 'tasks.edit', params: { id: task.id } }" class="text-blue-500 cursor-pointer">Edit Task</router-link>&nbsp;|&nbsp;
+                                    <router-link :to="{ name: 'tasks.delete', params: { id: task.id } }" class="text-blue-500 cursor-pointer">delete Task</router-link>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -28,6 +38,8 @@ import { Head } from '@inertiajs/vue3';
 </template>
 
 <script>
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { Head } from '@inertiajs/vue3';
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
