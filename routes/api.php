@@ -17,13 +17,4 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/tasks', [TaskController::class, 'index'])->name('task.index');
 
-    Route::prefix('task')->group(function () {
-        Route::post('/', [TaskController::class, 'store'])->name('task.create');
-        Route::get('/{id}', [TaskController::class, 'show'])->name('task.show');
-        Route::put('/{id}', [TaskController::class, 'update'])->name('task.update');
-        Route::delete('/{id}', [TaskController::class, 'destroy'])->name('task.delete');
-    });
-});

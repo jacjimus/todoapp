@@ -17,7 +17,7 @@ const routes = [
     },
     {
         path: '/tasks/edit/:id',
-        name: 'tasks.edit',
+        name: 'task.edit',
         component: EditTask,
     },
     {

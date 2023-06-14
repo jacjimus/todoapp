@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\TaskRequest;
 use App\Repositories\TaskRepository;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class TaskController extends Controller
 {
@@ -16,21 +19,28 @@ class TaskController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function index(): Response
     {
         $tasks = $this->taskRepository->getAll();
-        return response()->json($tasks);
+        return Inertia::render('Dashboard', [
+            'tasks' => $tasks
+        ]);
+    }
+
+    public function create(): Response
+    {
+        return Inertia::render('Task/CreateTask');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(TaskRequest $request): JsonResponse
+    public function store(TaskRequest $request): RedirectResponse
     {
         $safeRequest = $request->safe();
-        $task = $this->taskRepository->create($safeRequest->all());
+        $this->taskRepository->create($safeRequest->all());
 
-        return response()->json($task);
+        return to_route('tasks.index');
     }
 
     /**

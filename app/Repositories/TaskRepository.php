@@ -14,7 +14,7 @@ class TaskRepository
 
     public function getAll(): Collection
     {
-        return $this->model->all();
+        return auth()->user()->tasks;
     }
 
     public function getById($id): Task

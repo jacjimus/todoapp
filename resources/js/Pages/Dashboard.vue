@@ -1,3 +1,8 @@
+<script setup>
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { Head, Link } from '@inertiajs/vue3';
+</script>
+
 <template>
     <AuthenticatedLayout>
         <template #header>
@@ -9,7 +14,10 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 flex justify-between items-center">
                         <h3 class="font-semibold text-lg">Your Tasks</h3>
-                        <router-link :to="{ name: 'tasks.create' }" class="text-blue-500 cursor-pointer">Create New Task</router-link>
+                        <Link :href="route('task.create')" :active="route().current('task.create')"
+                                 class="text-blue-500 cursor-pointer">
+                            Create New Task
+                        </Link>
                     </div>
                     <div class="p-6">
                         <table class="table table-responsive w-100">
@@ -24,8 +32,8 @@
                                 <td>{{ task.title }}</td>
                                 <td>{{ task.description }}</td>
                                 <td>
-                                    <router-link :to="{ name: 'tasks.edit', params: { id: task.id } }" class="text-blue-500 cursor-pointer">Edit Task</router-link>&nbsp;|&nbsp;
-                                    <router-link :to="{ name: 'tasks.delete', params: { id: task.id } }" class="text-blue-500 cursor-pointer">delete Task</router-link>
+                                    <ResponsiveNavLink :href="route('task.show', {id: task.id})"  class="text-blue-500 cursor-pointer"> Edit Task </ResponsiveNavLink>
+                                    <ResponsiveNavLink :href="route('task.delete', {id: task.id})" class="text-blue-500 cursor-pointer"> Delete Task </ResponsiveNavLink>
                                 </td>
                             </tr>
                             </tbody>
@@ -37,37 +45,4 @@
     </AuthenticatedLayout>
 </template>
 
-<script>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
-
-export default {
-    setup() {
-        const tasks = ref([]);
-
-        const fetchTasks = () => {
-            axios
-                .get('/api/tasks')
-                .then(response => {
-                    tasks.value = response.data;
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        };
-
-        onMounted(fetchTasks);
-
-        return {
-            tasks,
-        };
-    },
-};
-</script>
-
-<style>
-/* Your custom styles here */
-</style>
 
