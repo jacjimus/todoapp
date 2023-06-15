@@ -44,6 +44,9 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    /*
+     * User relationship to a Task
+     */
     public function tasks(): HasMany
     {
         return $this->hasMany(Task::class);
