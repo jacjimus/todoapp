@@ -35,6 +35,13 @@ Install dependencies:
 ```bash
 composer install
 ```
+```bash
+npm install
+```
+
+```bash
+npm run build
+```
 
 Generate app key:
 
