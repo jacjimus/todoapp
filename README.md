@@ -91,3 +91,8 @@ POST Request: {app_url}/api/token : params email: your_email_address, password: 
 ``` API endpoint - Get user tasks
 GET Request:  {app_url}/api/user/tasks : Authentication Bearer token (received from the above request)
 ```
+
+
+``` Assumptions made
+Users can only view, edit and delete their own tasks, Hence the application is using Model policy to authorize those actions
+```
