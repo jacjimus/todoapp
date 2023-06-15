@@ -18,12 +18,16 @@ use Inertia\Response;
 
 class TaskController extends Controller
 {
+    /**
+     * @param TaskRepository $taskRepository
+     */
     public function __construct(protected TaskRepository $taskRepository)
     {
     }
 
     /**
-     * Display a listing of the resource.
+     * Method to list all user tasks
+     * @return Response
      * @throws AuthorizationException
      */
     public function index(): Response
@@ -33,6 +37,10 @@ class TaskController extends Controller
         return Inertia::render('Dashboard', compact('tasks'));
     }
 
+    /**
+     * @param Request $request
+     * @return AnonymousResourceCollection
+     */
     public function user_tasks(Request $request)
     {
         $tasks = $request->user()->tasks;
@@ -40,6 +48,9 @@ class TaskController extends Controller
         return TaskResource::collection($tasks);
     }
 
+    /**
+     * @return Response
+     */
     public function create(): Response
     {
         return Inertia::render('Task/CreateTask');
@@ -57,6 +68,8 @@ class TaskController extends Controller
     }
 
     /**
+     * @param $id
+     * @return Response
      * @throws AuthorizationException
      */
     public function edit($id): Response
@@ -70,6 +83,8 @@ class TaskController extends Controller
 
     /**
      * Display the specified resource.
+     * @param $id
+     * @return Response
      * @throws AuthorizationException
      */
     public function show($id): Response
@@ -81,6 +96,9 @@ class TaskController extends Controller
 
     /**
      * Update the specified resource in storage.
+     * @param TaskRequest $request
+     * @param $id
+     * @return RedirectResponse
      * @throws AuthorizationException
      */
     public function update(TaskRequest $request, $id): RedirectResponse
@@ -96,6 +114,8 @@ class TaskController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     * @param $id
+     * @return RedirectResponse
      * @throws AuthorizationException
      */
     public function destroy($id): RedirectResponse

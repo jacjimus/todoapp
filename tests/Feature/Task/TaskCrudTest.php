@@ -14,7 +14,9 @@ class TaskCrudTest extends TestCase
 {
     use DatabaseTransactions;
 
-
+    /**
+     * Test if user can create a task
+     */
     public function test_authenticated_user_can_create_a_task(): void
     {
         $user = $this->createUserAndAuthenticate();
@@ -26,7 +28,9 @@ class TaskCrudTest extends TestCase
         $this->assertDatabaseHas('tasks', $task);
     }
 
-
+    /**
+     * Test if user can update a task
+     */
     public function test_authenticated_user_can_update_a_task(): void
     {
         $user = $this->createUserAndAuthenticate();
@@ -45,6 +49,9 @@ class TaskCrudTest extends TestCase
         ]);
     }
 
+    /**
+     * Test if user can delete a task
+     */
     public function test_authenticated_user_can_delete_their_task(): void
     {
         $user = $this->createUserAndAuthenticate();
@@ -55,6 +62,9 @@ class TaskCrudTest extends TestCase
         $this->assertDatabaseMissing('tasks', $task->toArray());
     }
 
+    /**
+     * Test if task cannot be created if title is missing
+     */
     public function test_user_cannot_create_a_task_without_title(): void
     {
         $user = $this->createUserAndAuthenticate();
@@ -66,6 +76,9 @@ class TaskCrudTest extends TestCase
         $response->assertInvalid(['title' => 'The title field is required']);
     }
 
+    /**
+     * Test task cannot be created if description is missing
+     */
     public function test_user_cannot_create_a_task_without_description(): void
     {
         $user = $this->createUserAndAuthenticate();
@@ -77,6 +90,9 @@ class TaskCrudTest extends TestCase
         $response->assertInvalid(['description' => 'The description field is required']);
     }
 
+    /**
+     * Test to check if user cannot update task for another user
+     */
     public function test_user_cannot_update_a_task_belonging_to_another_user(): void
     {
         $this->createUserAndAuthenticate();
