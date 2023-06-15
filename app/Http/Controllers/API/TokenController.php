@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Hash;
 
 class TokenController extends Controller
 {
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function create(Request $request): JsonResponse
     {
         $credentials = $request->validate([
