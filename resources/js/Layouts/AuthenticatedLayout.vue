@@ -145,6 +145,9 @@ const showingNavigationDropdown = ref(false);
 
             <!-- Page Content -->
             <main>
+                <div v-if="$page.props.flash.message" class="mb-4 text-green-600 text-center">
+                    {{ $page.props.flash.message }}
+                </div>
                 <slot />
             </main>
         </div>

@@ -1,8 +1,3 @@
-<script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
-</script>
-
 <template>
     <AuthenticatedLayout>
         <template #header>
@@ -14,7 +9,7 @@ import { Head, Link } from '@inertiajs/vue3';
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 flex justify-between items-center">
                         <h3 class="font-semibold text-lg">Your Tasks</h3>
-                        <Link :href="route('task.create')" :active="route().current('task.create')"
+                        <Link :href="route('tasks.create')" :active="route().current('task.create')"
                                  class="text-blue-500 cursor-pointer">
                             Create New Task
                         </Link>
@@ -29,11 +24,12 @@ import { Head, Link } from '@inertiajs/vue3';
                             </thead>
                             <tbody>
                             <tr  v-for="task in tasks" :key="task.id">
-                                <td>{{ task.title }}</td>
-                                <td>{{ task.description }}</td>
-                                <td>
-                                    <ResponsiveNavLink :href="route('task.show', {id: task.id})"  class="text-blue-500 cursor-pointer"> Edit Task </ResponsiveNavLink>
-                                    <ResponsiveNavLink :href="route('task.delete', {id: task.id})" class="text-blue-500 cursor-pointer"> Delete Task </ResponsiveNavLink>
+                                <td class="px-6 py-4 white-space-nowrap text-sm leading-5 text-gray-900">{{ task.title }}</td>
+                                <td class="px-6 py-4 white-space-nowrap text-sm leading-5 text-gray-900">{{ task.description }}</td>
+                                <td class="px-6 py-4 white-space-nowrap text-sm leading-5 text-gray-900">
+                                    <Button @click="openModal(task)"  class="px-2 py-1 mr-2  bg-green-500  text-white rounded cursor-pointer"> View</Button>
+                                    <Link :href="route('tasks.edit', {id: task.id})"  class="px-2 py-1 mr-2 bg-blue-500  text-white rounded cursor-pointer"> Edit</Link>
+                                    <button @click="destroy(task.id)" class="px-2 py-1  bg-red-500  text-white rounded cursor-pointer"> Delete</button>
                                 </td>
                             </tr>
                             </tbody>
@@ -42,7 +38,54 @@ import { Head, Link } from '@inertiajs/vue3';
                 </div>
             </div>
         </div>
+        <Modal v-if="show" :task="selectedTask" @close="closeModal" />
     </AuthenticatedLayout>
 </template>
+ <script>
+ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+ import Modal from '@/Components/Modal.vue';
+ import  ShowTask from '@/Pages/Task/TaskModal.vue';
+ import { Head, Link, usePage } from '@inertiajs/vue3';
+ import { Inertia } from '@inertiajs/inertia';
+ import { reactive } from 'vue';
 
+ export default {
+     components: {
+         AuthenticatedLayout,
+         Modal,
+         ShowTask,
+         Head,
+         Link,
+     },
+     props: {
+         tasks: Object,
+     },
+     setup() {
+         let showModal = reactive(false);
+         let selectedTask = reactive(null);
+         const destroy = (id) => {
+             if(confirm('Are you sure?')) {
+                 Inertia.delete(route('tasks.destroy', id))
+             }
+         }
+         const openModal = (task) => {
+             selectedTask = task;
+             showModal = true;
+         };
+
+         const closeModal = () => {
+             showModal = false;
+             selectedTask = null;
+         };
+
+         return {
+             showModal,
+             selectedTask,
+             destroy,
+             openModal,
+             closeModal,
+         };
+     },
+ };
+ </script>
 

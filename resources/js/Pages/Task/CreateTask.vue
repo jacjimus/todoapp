@@ -1,15 +1,3 @@
-<script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
-import { reactive } from 'vue'
-import { router, useForm } from '@inertiajs/vue3'
-
-const form = useForm({
-    title: null,
-    description: null,
-})
-
-</script>
 <template>
     <AuthenticatedLayout>
         <template #header>
@@ -27,20 +15,23 @@ const form = useForm({
                     </div>
                     <div class="p-6">
 
-                        <form class="form-horizontal" method="post" @submit.prevent="form.post('task')">
+                        <form class="form-horizontal" @submit.prevent="form.post(route('tasks.store'))">
                             <div class="form-group">
-                                <label for="title">Title</label>
-                                <input type="text" id="title" v-model="form.title" >
-                                <div v-if="form.errors.title">{{ form.errors.title }}</div>
+                                <label for="title" class="block font-medium text-sm text-grey-700">Title</label>
+                                <input type="text" id="title" v-model="form.title" class="block mt-1 w-full rounded">
+                                <div v-if="form.errors.title" style="color: red;">{{ form.errors.title }}</div>
                             </div>
 
                             <div class="form-group">
-                                <label for="description">Description</label>
-                                <textarea id="description" v-model="form.description" ></textarea>
-                                <div v-if="form.errors.description">{{ form.errors.description }}</div>
+                                <label for="description" class="block font-medium text-sm text-grey-700">Description</label>
+                                <textarea id="description" v-model="form.description" class="block mt-1 w-full rounded"></textarea>
+                                <div v-if="form.errors.description" style="color: red;">{{ form.errors.description }}</div>
                             </div>
-
-                            <button type="submit" :disabled="form.processing" class="btn btn-primary">Save Task</button>
+                            <div class="py-4">
+                            <PrimaryButton class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                                Create
+                            </PrimaryButton>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -49,6 +40,26 @@ const form = useForm({
     </AuthenticatedLayout>
 </template>
 
+<script >
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { Head, Link } from '@inertiajs/vue3';
+import { reactive } from 'vue'
+import { router, useForm } from '@inertiajs/vue3'
+export default {
+    components: {
+        AuthenticatedLayout,PrimaryButton, Head, Link
+    },
+    setup() {
+        const form = useForm({
+            title: '',
+            description: '',
+        })
+        return { form }
+    }
+}
+
+</script>
 
 
 <style>

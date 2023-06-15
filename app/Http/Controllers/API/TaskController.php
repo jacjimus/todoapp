@@ -4,9 +4,15 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TaskRequest;
+use App\Http\Resources\TaskResource;
+use App\Models\Task;
 use App\Repositories\TaskRepository;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Collection;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -18,13 +24,20 @@ class TaskController extends Controller
 
     /**
      * Display a listing of the resource.
+     * @throws AuthorizationException
      */
     public function index(): Response
     {
+        $this->authorize('viewAny', Task::class);
         $tasks = $this->taskRepository->getAll();
-        return Inertia::render('Dashboard', [
-            'tasks' => $tasks
-        ]);
+        return Inertia::render('Dashboard', compact('tasks'));
+    }
+
+    public function user_tasks(Request $request)
+    {
+        $tasks = $request->user()->tasks;
+
+        return TaskResource::collection($tasks);
     }
 
     public function create(): Response
@@ -40,36 +53,58 @@ class TaskController extends Controller
         $safeRequest = $request->safe();
         $this->taskRepository->create($safeRequest->all());
 
-        return to_route('tasks.index');
+        return redirect()->route('tasks.index')->with('message', 'Task created successfully');
+    }
+
+    /**
+     * @throws AuthorizationException
+     */
+    public function edit($id): Response
+    {
+        $task = $this->taskRepository->getById($id);
+
+        $this->authorize('view', $task);
+
+        return Inertia::render('Task/EditTask', compact('task'));
     }
 
     /**
      * Display the specified resource.
+     * @throws AuthorizationException
      */
-    public function show($id): JsonResponse
+    public function show($id): Response
     {
         $task = $this->taskRepository->getById($id);
-        return response()->json($task);
+        $this->authorize('view', $task);
+        return Inertia::render('Task/ViewTask', compact('task'));
     }
 
     /**
      * Update the specified resource in storage.
+     * @throws AuthorizationException
      */
-    public function update(TaskRequest $request, $id): JsonResponse
+    public function update(TaskRequest $request, $id): RedirectResponse
     {
+        $task = $this->taskRepository->getById($id);
+        $this->authorize('update', $task);
         $safeRequest = $request->safe();
-        $this->taskRepository->update($id, $safeRequest->all());
 
-        return response()->json(['success' => true], 201);
+        $task->update($safeRequest->all());
+
+        return redirect()->route('tasks.index')->with('message', 'Task updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
+     * @throws AuthorizationException
      */
-    public function destroy($id): JsonResponse
+    public function destroy($id): RedirectResponse
     {
-        $this->taskRepository->delete($id);
+        $task = $this->taskRepository->getById($id);
+        $this->authorize('delete', $task);
 
-        return response()->json(['success' => true], 201);
+        $task->delete();
+
+        return redirect()->route('tasks.index')->with('message', 'Task deleted successfully');
     }
 }

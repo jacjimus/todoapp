@@ -27,14 +27,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/', [TaskController::class, 'index'])->name('tasks.index');
 
-    Route::prefix('task')->group(function () {
-        Route::get('/', [TaskController::class, 'create'])->name('task.create');
-        Route::post('/', [TaskController::class, 'store'])->name('task.store');
-        Route::get('/{id}', [TaskController::class, 'edit'])->name('task.edit');
-        Route::put('/{id}', [TaskController::class, 'update'])->name('task.update');
-        Route::get('/{id}/show', [TaskController::class, 'show'])->name('task.show');
-        Route::delete('/{id}', [TaskController::class, 'destroy'])->name('task.delete');
-    });
+    Route::resource('tasks', TaskController::class);
+
 });
 
 require __DIR__.'/auth.php';
